@@ -3,6 +3,7 @@
 import React, { useEffect, useState } from "react";
 import Image from "next/image";
 import { Clock, Flame, Star } from "lucide-react";
+import Link from "next/link";
 
 const WorkoutLibrary = () => {
   const [workouts, setWorkouts] = useState([]);
@@ -60,12 +61,12 @@ const WorkoutLibrary = () => {
             ডেটা লোড করতে সমস্যা হয়েছে: {error}
           </div>
         )}
-
         {/* ওয়ার্কআউট কার্ড গ্রিড */}
         {!loading && !error && (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {workouts.map((item) => (
-              <div
+              <Link
+                href={`/exercise/${item.id}`}
                 key={item.id}
                 className="bg-[#12151a] rounded-2xl overflow-hidden border border-gray-800/60 flex flex-col justify-between hover:border-gray-700 transition-all duration-300"
               >
@@ -123,7 +124,7 @@ const WorkoutLibrary = () => {
                   </div>
                 </div>
 
-              </div>
+              </Link>
             ))}
           </div>
         )}

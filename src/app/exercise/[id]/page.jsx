@@ -19,6 +19,7 @@ export default function WorkoutDetailsPage({ params }) {
 
     const fetchWorkoutDetails = async () => {
       try {
+        console.log(`https://api.abcz.workers.dev/api/fitlog/${id}`);
         setLoading(true);
         const res = await fetch(`https://api.abcz.workers.dev/api/fitlog/${id}`);
         
@@ -28,6 +29,7 @@ export default function WorkoutDetailsPage({ params }) {
         
         const data = await res.json();
         setWorkout(data);
+        setLoading(false);
       } catch (err) {
         setError(err.message);
         setLoading(false);
