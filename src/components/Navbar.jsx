@@ -6,7 +6,7 @@ import { WorkoutsContext } from "./context/WorkoutContext";
 
 const Navbar = () => {
   const [activeTab, setActiveTab] = useState("Workouts");
-  const { planCount, savedCount, setPlanCount, setSavedCount, isOpen, setIsOpen } = useContext(WorkoutsContext);
+  const { planCount, savedCount, isOpen, setIsOpen } = useContext(WorkoutsContext);
 
   return (
     <nav className="bg-[#0b0c0e] text-white px-4 min-[1025px]:px-6 py-3 border-b border-gray-800 relative z-50">

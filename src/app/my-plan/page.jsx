@@ -1,53 +1,80 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { Clock, Flame, Star, Check, X, ChevronDown } from "lucide-react";
 
-// টেস্ট বা ডেমো ডেটা (খালি অবস্থা দেখতে চাইলে ইনিশিয়াল স্টেট হিসেবে খালি এরে [] পাঠাতে পারেন)
-const initialPlanItems = [
-  {
-    id: 1,
-    name: "BACK SQUAT",
-    equipment: "Barbell, Rack",
-    duration: 30,
-    caloriesBurned: 240,
-    rating: 4.9,
-    image: "https://img.magnific.com/free-photo/portrait-anime-character-doing-fitness-exercising_23-2151666664.jpg?w=740",
-    isCompleted: false,
-  },
-];
-
 const MyPlanSection = () => {
   const [activeTab, setActiveTab] = useState("Today's Plan");
   const [sortBy, setSortBy] = useState("Duration");
-  const [planItems, setPlanItems] = useState(initialPlanItems);
+  const [planItems, setPlanItems] = useState([]);
 
-  // ডায়নামিক সামারি হিসাব (Exercises, Minutes, Calories)
+  
+  useEffect(() => {
+    const key = activeTab === "Today's Plan" ? "myPlanData" : "savePlanData";
+    const storedData = localStorage.getItem(key);
+    
+    if (storedData) {
+      try {
+        setPlanItems(JSON.parse(storedData));
+      } catch (err) {
+        console.error("Error parsing localStorage data", err);
+        setPlanItems([]);
+      }
+    } else {
+      setPlanItems([]);
+    }
+  }, [activeTab]);
+
+  
   const totalExercises = planItems.length;
-  const totalMinutes = planItems.reduce((sum, item) => sum + item.duration, 0);
-  const totalCalories = planItems.reduce((sum, item) => sum + item.caloriesBurned, 0);
+  const totalMinutes = planItems.reduce((sum, item) => sum + (Number(item.duration) || 0), 0);
+  const totalCalories = planItems.reduce((sum, item) => sum + (Number(item.caloriesBurned) || 0), 0);
 
-  // আইটেম মুছে ফেলার হ্যান্ডলার
+  
   const handleRemove = (id) => {
-    setPlanItems((prev) => prev.filter((item) => item.id !== id));
+    const updatedPlan = planItems.filter((item) => item.id !== id);
+    setPlanItems(updatedPlan);
+
+    
+    const key = activeTab === "Today's Plan" ? "myPlanData" : "savePlanData";
+    localStorage.setItem(key, JSON.stringify(updatedPlan));
   };
 
-  // কমপ্লিট মার্ক করার হ্যান্ডলার
   const handleToggleComplete = (id) => {
-    setPlanItems((prev) =>
-      prev.map((item) =>
-        item.id === id ? { ...item, isCompleted: !item.isCompleted } : item
-      )
-    );
+    const updatedPlan = planItems.filter((item) => item.id !== id);
+    setPlanItems(updatedPlan);
+
+    
+    const key = activeTab === "Today's Plan" ? "myPlanData" : "savePlanData";
+    localStorage.setItem(key, JSON.stringify(updatedPlan));
   };
+
+  
+  // const handleToggleComplete = (id) => {
+  //   const updatedPlan = planItems.map((item) =>
+  //     item.id === id ? { ...item, isCompleted: !item.isCompleted } : item
+  //   );
+  //   setPlanItems(updatedPlan);
+
+    
+  //   const key = activeTab === "Today's Plan" ? "myPlanData" : "savePlanData";
+  //   localStorage.setItem(key, JSON.stringify(updatedPlan));
+  // };
+
+  
+  const sortedPlanItems = [...planItems].sort((a, b) => {
+    if (sortBy === "Duration") return (b.duration || 0) - (a.duration || 0);
+    if (sortBy === "Calories") return (b.caloriesBurned || 0) - (a.caloriesBurned || 0);
+    if (sortBy === "Rating") return (b.rating || 0) - (a.rating || 0);
+    return 0;
+  });
 
   return (
     <section className="bg-[#0b0c0e] text-white min-h-screen py-10 px-4 sm:px-6 lg:px-8">
       <div className="max-w-6xl mx-auto space-y-6">
         
-        {/* হেডার সেকশন */}
         <div>
           <h1 className="text-3xl sm:text-4xl font-black tracking-tight uppercase text-white">
             MY PLAN
@@ -57,7 +84,6 @@ const MyPlanSection = () => {
           </p>
         </div>
 
-        {/* সামারি পরিসংখ্যান কার্ড (Exercises, Minutes, Calories) */}
         <div className="bg-[#12151a] border border-gray-800/80 rounded-2xl grid grid-cols-3 divide-x divide-gray-800/80 p-6">
           <div className="flex flex-col space-y-1">
             <span className="text-gray-400 text-xs font-semibold">Exercises</span>
@@ -81,9 +107,9 @@ const MyPlanSection = () => {
           </div>
         </div>
 
-        {/* ফিল্টার এবং সর্টিং কন্ট্রোল */}
+        {/* Todays Plan & Saved switch */}
         <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 pt-2">
-          {/* ট্যাব সুইচ (Today's Plan / Saved) */}
+
           <div className="flex items-center gap-1 bg-[#12151a] p-1 rounded-xl border border-gray-800/80">
             <button
               onClick={() => setActiveTab("Today's Plan")}
@@ -108,7 +134,7 @@ const MyPlanSection = () => {
             </button>
           </div>
 
-          {/* Sort By ড্রপডাউন */}
+          {/* Sort By */}
           <div className="flex items-center gap-2 self-end sm:self-auto">
             <span className="text-xs font-semibold text-gray-400">Sort By</span>
             <div className="relative">
@@ -126,9 +152,11 @@ const MyPlanSection = () => {
           </div>
         </div>
 
-        {/* প্রধান কনটেন্ট এরিয়া (খালি অথবা আইটেম লিস্ট) */}
-        {planItems.length === 0 ? (
-          /* ১. খালি অবস্থা (EMPTY STATE) */
+
+
+
+
+        {sortedPlanItems.length === 0 ? (
           <div className="bg-[#12151a] border border-dashed border-gray-800/80 rounded-2xl py-16 px-4 flex flex-col items-center justify-center text-center space-y-3">
             <h3 className="text-lg font-black uppercase text-white tracking-wide">
               NOTHING HERE YET
@@ -137,21 +165,20 @@ const MyPlanSection = () => {
               Browse the library and add a lift to get today moving.
             </p>
             <Link
-              href="/workouts"
+              href="/"
               className="mt-2 bg-[#a3e635] hover:bg-[#8ee012] text-black font-extrabold text-xs px-6 py-3 rounded-full transition-all active:scale-95"
             >
               Go to workouts
             </Link>
           </div>
         ) : (
-          /* ২. ডেটা যুক্ত অবস্থা (POPULATED LIST) */
           <div className="space-y-4">
-            {planItems.map((item) => (
+            {sortedPlanItems.map((item) => (
               <div
                 key={item.id}
                 className="bg-[#12151a] border border-gray-800/80 rounded-2xl p-4 flex flex-col sm:flex-row items-center justify-between gap-4"
               >
-                {/* বাম দিক: ছবি ও বিবরণ */}
+                {/* left side */}
                 <div className="flex items-center gap-4 w-full sm:w-auto">
                   <div className="relative w-28 h-18 sm:w-32 sm:h-20 rounded-xl overflow-hidden bg-gray-900 flex-shrink-0">
                     <Image
@@ -170,7 +197,6 @@ const MyPlanSection = () => {
                       {item.equipment}
                     </p>
 
-                    {/* মেটাডেটা (সময়, ক্যালোরি, রেটিং) */}
                     <div className="flex items-center gap-3 text-xs font-semibold text-gray-400 pt-1">
                       <span className="flex items-center gap-1">
                         <Clock className="w-3.5 h-3.5 text-gray-400" />
@@ -188,18 +214,19 @@ const MyPlanSection = () => {
                   </div>
                 </div>
 
-                {/* ডান দিক: অ্যাকশন বাটনসমূহ */}
+                {/* Right side */}
                 <div className="flex items-center gap-3 w-full sm:w-auto justify-end">
                   <Link
-                    href={`/workouts/${item.id}`}
-                    className="border border-gray-700 hover:bg-gray-800 text-gray-300 hover:text-white text-xs font-bold px-4 py-2 rounded-full transition-all"
+                    href={`/exercise/${item.id}`}
+                    className="cursor-pointer border border-gray-700 hover:bg-gray-800 text-gray-300 hover:text-white text-xs font-bold px-4 py-2 rounded-full transition-all"
                   >
                     View Details
                   </Link>
 
+                  {activeTab === "Today's Plan" ?
                   <button
                     onClick={() => handleToggleComplete(item.id)}
-                    className={`flex items-center gap-1.5 text-xs font-black px-4 py-2 rounded-full transition-all ${
+                    className={`flex cursor-pointer items-center gap-1.5 text-xs font-black px-4 py-2 rounded-full transition-all ${
                       item.isCompleted
                         ? "bg-gray-700 text-gray-300"
                         : "bg-[#a3e635] hover:bg-[#8ee012] text-black"
@@ -207,11 +234,11 @@ const MyPlanSection = () => {
                   >
                     <Check className="w-3.5 h-3.5 stroke-[3]" />
                     {item.isCompleted ? "Done" : "Mark as Done"}
-                  </button>
+                  </button>:""}
 
                   <button
                     onClick={() => handleRemove(item.id)}
-                    className="text-gray-400 hover:text-white p-1 transition-colors"
+                    className="cursor-pointer text-gray-400 hover:text-white p-1 transition-colors"
                     title="Remove from plan"
                   >
                     <X className="w-4 h-4" />
