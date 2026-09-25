@@ -11,6 +11,9 @@ export const WorkoutsProvider = ({ children }) => {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
 
+
+
+            
     useEffect(() => {
     const fetchWorkouts = async () => {
         try {
@@ -26,22 +29,21 @@ export const WorkoutsProvider = ({ children }) => {
         setLoading(false);
         }
     };
-
     fetchWorkouts();
     }, []);
 
     const info ={
         isOpen, 
-        planCount, 
-        savedCount,
-        workouts,
-        loading,
-        error,
         setIsOpen, 
+        planCount, 
         setPlanCount, 
+        savedCount,
         setSavedCount,
+        workouts,
         setWorkouts,
+        loading,
         setLoading,
+        error,
         setError
     };
     return (
