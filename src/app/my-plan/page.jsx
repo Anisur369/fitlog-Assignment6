@@ -64,7 +64,7 @@ const MyPlanSection = () => {
   // };
 
   
-  const sortedPlanItems = [...planItems].sort((a, b) => {
+  const sortedPlanItems = [...planItems].sort((b, a) => {
     if (sortBy === "Duration") return (b.duration || 0) - (a.duration || 0);
     if (sortBy === "Calories") return (b.caloriesBurned || 0) - (a.caloriesBurned || 0);
     if (sortBy === "Rating") return (b.rating || 0) - (a.rating || 0);
@@ -217,7 +217,8 @@ const MyPlanSection = () => {
                 {/* Right side */}
                 <div className="flex items-center gap-3 w-full sm:w-auto justify-end">
                   <Link
-                    href={`/exercise/${item.id}`}
+                    href={`/exercise/${item.id}`} 
+                    onClick={()=>setActiveTab("Workouts")}
                     className="cursor-pointer border border-gray-700 hover:bg-gray-800 text-gray-300 hover:text-white text-xs font-bold px-4 py-2 rounded-full transition-all"
                   >
                     View Details

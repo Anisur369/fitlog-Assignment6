@@ -3,10 +3,12 @@ import Link from "next/link";
 import Image from "next/image";
 import React, { useEffect, useState, use, useContext } from "react";
 import { Plus, Bookmark, ArrowLeft } from "lucide-react";
+import { WorkoutsContext } from "@/components/context/WorkoutContext";
 
 export default function WorkoutDetailsPage({ params }) {
   const resolvedParams = use(params);
   const id = resolvedParams?.id;
+  const { setActiveTab } = useContext(WorkoutsContext);
 
   const [workout, setWorkout] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -96,7 +98,8 @@ export default function WorkoutDetailsPage({ params }) {
         {/* back button */}
         <div className="mb-6">
           <Link
-            href="/"
+            href="/" 
+            onClick={()=>setActiveTab("Workouts")}
             className="inline-flex items-center gap-2 text-gray-400 hover:text-[#a3e635] text-sm font-semibold transition-colors"
           >
             <ArrowLeft className="w-4 h-4" /> Back to Library

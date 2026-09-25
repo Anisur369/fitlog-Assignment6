@@ -4,9 +4,8 @@ import { createContext, useState, useEffect } from "react";
 export const WorkoutsContext = createContext();
 
 export const WorkoutsProvider = ({ children }) => {
+    const [activeTab, setActiveTab] = useState("Workouts");
     const [isOpen, setIsOpen] = useState(false);
-    const [planCount, setPlanCount] = useState(0);
-    const [savedCount, setSavedCount] = useState(0);
     const [workouts, setWorkouts] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
@@ -23,9 +22,9 @@ export const WorkoutsProvider = ({ children }) => {
         }
         const data = await res.json();
         setWorkouts(data);
-        } catch (err) {
+    } catch (err) {
         setError(err.message);
-        } finally {
+    } finally {
         setLoading(false);
         }
     };
@@ -33,12 +32,10 @@ export const WorkoutsProvider = ({ children }) => {
     }, []);
 
     const info ={
+        activeTab,
+        setActiveTab,
         isOpen, 
-        setIsOpen, 
-        planCount, 
-        setPlanCount, 
-        savedCount,
-        setSavedCount,
+        setIsOpen,
         workouts,
         setWorkouts,
         loading,
