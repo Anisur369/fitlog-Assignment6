@@ -1,24 +1,21 @@
 "use client";
 import Link from "next/link";
-import { Dumbbell, Menu, X } from "lucide-react";
-import React, { useState, useContext, useEffect } from "react";
+import { Menu, X } from "lucide-react";
+import React, { useContext } from "react";
 import { WorkoutsContext } from "./context/WorkoutContext";
 import Image from "next/image";
-import Dumbbel from "../assets/logo.png"
+import Dumbbel from "../assets/logo.png";
 
 const Navbar = () => {
-  const [planCount, setPlanCount] = useState(0);
-  const [savedCount, setSavedCount] = useState(0);
-  const { isOpen, setIsOpen, activeTab, setActiveTab } = useContext(WorkoutsContext);
+  const { 
+    isOpen, 
+    setIsOpen, 
+    activeTab, 
+    setActiveTab, 
+    planItems,
+    saveItems
+  } = useContext(WorkoutsContext);
 
-  useEffect(() => {
-    const storedStringData = localStorage.getItem("myPlanData");
-    const myPlanData=JSON.parse(storedStringData) || [];
-    setPlanCount(myPlanData.length);
-    const savePlanStringData = localStorage.getItem("savePlanData");
-    const savePlanData = JSON.parse(savePlanStringData) || [];
-    setSavedCount(savePlanData.length);
-  }, []);
 
   return (
     <nav className="bg-[#0b0c0e] text-white px-4 min-[1025px]:px-6 py-3 border-b border-gray-800 relative z-50">
@@ -33,7 +30,6 @@ const Navbar = () => {
             {isOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
           </button>
           <Link href="/" className="flex items-center gap-2 group">
-            {/* <Dumbbell className="w-6 h-6 text-[#a3e635] transform -rotate-45 group-hover:scale-110 transition-transform" /> */}
             <Image src={Dumbbel} alt="Dumbbel" className="w-6 h-6 text-[#a3e635] transform -rotate-90 group-hover:scale-110 transition-transform" /> 
             <span className="text-xl font-extrabold tracking-wider text-white">
               FITLOG
@@ -73,7 +69,7 @@ const Navbar = () => {
               Plan
             </span>
             <span className="bg-[#a3e635] text-black text-xs font-bold w-5 h-5 min-[1025px]:w-6 min-[1025px]:h-6 rounded-full flex items-center justify-center">
-              {planCount}
+              {planItems.length}
             </span>
           </Link>
 
@@ -83,7 +79,7 @@ const Navbar = () => {
               Saved
             </span>
             <span className="border border-gray-600 text-gray-300 text-xs font-bold w-5 h-5 min-[1025px]:w-6 min-[1025px]:h-6 rounded-full flex items-center justify-center">
-              {savedCount}
+              {saveItems.length}
             </span>
           </Link>
         </div>

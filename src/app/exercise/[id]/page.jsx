@@ -2,13 +2,14 @@
 import Link from "next/link";
 import Image from "next/image";
 import React, { useEffect, useState, use, useContext } from "react";
+import { toast } from 'react-toastify';
 import { Plus, Bookmark, ArrowLeft } from "lucide-react";
 import { WorkoutsContext } from "@/components/context/WorkoutContext";
 
 export default function WorkoutDetailsPage({ params }) {
   const resolvedParams = use(params);
   const id = resolvedParams?.id;
-  const { setActiveTab } = useContext(WorkoutsContext);
+  const { setActiveTab, setPlanItems, setSaveItems } = useContext(WorkoutsContext);
 
   const [workout, setWorkout] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -20,11 +21,12 @@ export default function WorkoutDetailsPage({ params }) {
 
     const addmatch = currentMyPlan.some((plan) => workout?.id === plan.id);
     if (addmatch) {
-      alert("is already added to plan");
+      toast.error("Already in your plan❌");
     } else {
       const updatedPlan = [workout, ...currentMyPlan];
       localStorage.setItem("myPlanData", JSON.stringify(updatedPlan));
-      alert("Plan added successfully!");
+      setPlanItems(updatedPlan)
+      toast.success("Added to today's plan");
     }
   };
 
@@ -33,11 +35,12 @@ export default function WorkoutDetailsPage({ params }) {
 
     const saveWatch = currentSavePlan.some((save) => save.id === workout?.id);
     if (saveWatch) {
-      alert("is already saved");
+      toast.error("Already in your saved list ❌");
     } else {
       const updatedSavePlan = [workout, ...currentSavePlan];
       localStorage.setItem("savePlanData", JSON.stringify(updatedSavePlan));
-      alert("Saved successfully!");
+      setSaveItems(updatedSavePlan)
+      toast.success("Saved for later");
     }
   };
 

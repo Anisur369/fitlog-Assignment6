@@ -1,75 +1,108 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useContext } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { Clock, Flame, Star, Check, X, ChevronDown } from "lucide-react";
+import { WorkoutsContext } from "../../components/context/WorkoutContext";
+import { toast } from 'react-toastify';
+
+
+
 
 const MyPlanSection = () => {
   const [activeTab, setActiveTab] = useState("Today's Plan");
   const [sortBy, setSortBy] = useState("Duration");
-  const [planItems, setPlanItems] = useState([]);
+  // const [planItems, setPlanItems] = useState([]);
+  const { 
+    planItems, 
+    setPlanItems,
+    saveItems,
+    setSaveItems
+  } = useContext(WorkoutsContext);
 
-  
   useEffect(() => {
+
     const key = activeTab === "Today's Plan" ? "myPlanData" : "savePlanData";
-    const storedData = localStorage.getItem(key);
     
-    if (storedData) {
-      try {
-        setPlanItems(JSON.parse(storedData));
-      } catch (err) {
-        console.error("Error parsing localStorage data", err);
+    if(key==="myPlanData"){
+      const storedData = localStorage.getItem(key);
+      if (storedData) {
+        try {
+          setPlanItems(JSON.parse(storedData));
+        } catch (err) {
+          console.error("Error parsing localStorage data", err);
+          setPlanItems([]);
+        }
+      } else {
         setPlanItems([]);
       }
-    } else {
-      setPlanItems([]);
+    }else if(key==="savePlanData"){
+      const storedData = localStorage.getItem(key);
+      if (storedData) {
+        try {
+          setSaveItems(JSON.parse(storedData));
+        } catch (err) {
+          console.error("Error parsing localStorage data", err);
+          setSaveItems([]);
+        }
+      } else {
+        setSaveItems([]);
+      }
     }
+    
+
+
   }, [activeTab]);
 
-  
-  const totalExercises = planItems.length;
-  const totalMinutes = planItems.reduce((sum, item) => sum + (Number(item.duration) || 0), 0);
-  const totalCalories = planItems.reduce((sum, item) => sum + (Number(item.caloriesBurned) || 0), 0);
+
+  const totalExercises = activeTab === "Today's Plan"? planItems.length:saveItems.length;
+  const totalMinutes = activeTab === "Today's Plan"? planItems.reduce((sum, item) => sum + (Number(item.duration) || 0), 0):saveItems.reduce((sum, item) => sum + (Number(item.duration) || 0), 0);
+  const totalCalories = activeTab === "Today's Plan"? planItems.reduce((sum, item) => sum + (Number(item.caloriesBurned) || 0), 0):saveItems.reduce((sum, item) => sum + (Number(item.caloriesBurned) || 0), 0);
 
   
   const handleRemove = (id) => {
-    const updatedPlan = planItems.filter((item) => item.id !== id);
-    setPlanItems(updatedPlan);
-
-    
     const key = activeTab === "Today's Plan" ? "myPlanData" : "savePlanData";
-    localStorage.setItem(key, JSON.stringify(updatedPlan));
-  };
+    if(key=="myPlanData"){
+      const updatedPlan = planItems.filter((item) => item.id !== id);
+      setPlanItems(updatedPlan);
+      localStorage.setItem(key, JSON.stringify(updatedPlan));
+    }else if(key=="savePlanData"){
+      const updatedPlan = saveItems.filter((item) => item.id !== id);
+      setSaveItems(updatedPlan);
+      localStorage.setItem(key, JSON.stringify(updatedPlan));
+    }    
+    toast.success("Removed from today's plan");
 
+  };
+  
   const handleToggleComplete = (id) => {
-    const updatedPlan = planItems.filter((item) => item.id !== id);
-    setPlanItems(updatedPlan);
-
-    
     const key = activeTab === "Today's Plan" ? "myPlanData" : "savePlanData";
-    localStorage.setItem(key, JSON.stringify(updatedPlan));
+    if(key=="myPlanData"){
+      const updatedPlan = planItems.filter((item) => item.id !== id);
+      setPlanItems(updatedPlan);
+      localStorage.setItem(key, JSON.stringify(updatedPlan));
+      toast.success("Workout logged — nice work");
+    }else if(key=="savePlanData"){
+      const updatedPlan = saveItems.filter((item) => item.id !== id);
+      setSaveItems(updatedPlan);
+      localStorage.setItem(key, JSON.stringify(updatedPlan));
+      toast.success("Workout logged — nice work");
+    }
   };
 
-  
-  // const handleToggleComplete = (id) => {
-  //   const updatedPlan = planItems.map((item) =>
-  //     item.id === id ? { ...item, isCompleted: !item.isCompleted } : item
-  //   );
-  //   setPlanItems(updatedPlan);
-
-    
-  //   const key = activeTab === "Today's Plan" ? "myPlanData" : "savePlanData";
-  //   localStorage.setItem(key, JSON.stringify(updatedPlan));
-  // };
-
-  
-  const sortedPlanItems = [...planItems].sort((b, a) => {
+  const sortedPlanItems = activeTab === "Today's Plan" ? [...planItems].sort((b, a) => {
+    if (sortBy === "Duration") return (b.duration || 0) - (a.duration || 0);
+    if (sortBy === "Calories") return (b.caloriesBurned || 0) - (a.caloriesBurned || 0);
+    if (sortBy === "Rating") return (b.rating || 0) - (a.rating || 0);
+    return 0;
+  }):[...saveItems].sort((b, a) => {
     if (sortBy === "Duration") return (b.duration || 0) - (a.duration || 0);
     if (sortBy === "Calories") return (b.caloriesBurned || 0) - (a.caloriesBurned || 0);
     if (sortBy === "Rating") return (b.rating || 0) - (a.rating || 0);
     return 0;
   });
+  
 
   return (
     <section className="bg-[#0b0c0e] text-white min-h-screen py-10 px-4 sm:px-6 lg:px-8">
@@ -151,9 +184,6 @@ const MyPlanSection = () => {
             </div>
           </div>
         </div>
-
-
-
 
 
         {sortedPlanItems.length === 0 ? (

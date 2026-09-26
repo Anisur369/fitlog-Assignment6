@@ -10,8 +10,8 @@ export const WorkoutsProvider = ({ children }) => {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
 
-
-
+    const [planItems, setPlanItems] = useState([]);
+    const [saveItems, setSaveItems] = useState([]);
             
     useEffect(() => {
     const fetchWorkouts = async () => {
@@ -22,6 +22,7 @@ export const WorkoutsProvider = ({ children }) => {
         }
         const data = await res.json();
         setWorkouts(data);
+
     } catch (err) {
         setError(err.message);
     } finally {
@@ -29,6 +30,8 @@ export const WorkoutsProvider = ({ children }) => {
         }
     };
     fetchWorkouts();
+    const saveStoreData = localStorage.getItem("savePlanData");
+    setSaveItems(JSON.parse(saveStoreData))
     }, []);
 
     const info ={
@@ -41,7 +44,11 @@ export const WorkoutsProvider = ({ children }) => {
         loading,
         setLoading,
         error,
-        setError
+        setError,
+        planItems,
+        setPlanItems,
+        saveItems,
+        setSaveItems
     };
     return (
         <WorkoutsContext.Provider value={info}>
