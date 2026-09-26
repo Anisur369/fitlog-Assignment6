@@ -3,6 +3,8 @@ import Link from "next/link";
 import { Dumbbell, Menu, X } from "lucide-react";
 import React, { useState, useContext, useEffect } from "react";
 import { WorkoutsContext } from "./context/WorkoutContext";
+import Image from "next/image";
+import Dumbbel from "../assets/logo.png"
 
 const Navbar = () => {
   const [planCount, setPlanCount] = useState(0);
@@ -31,7 +33,8 @@ const Navbar = () => {
             {isOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
           </button>
           <Link href="/" className="flex items-center gap-2 group">
-            <Dumbbell className="w-6 h-6 text-[#a3e635] transform -rotate-45 group-hover:scale-110 transition-transform" />
+            {/* <Dumbbell className="w-6 h-6 text-[#a3e635] transform -rotate-45 group-hover:scale-110 transition-transform" /> */}
+            <Image src={Dumbbel} alt="Dumbbel" className="w-6 h-6 text-[#a3e635] transform -rotate-90 group-hover:scale-110 transition-transform" /> 
             <span className="text-xl font-extrabold tracking-wider text-white">
               FITLOG
             </span>
