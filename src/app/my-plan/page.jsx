@@ -22,10 +22,9 @@ const MyPlanSection = () => {
   } = useContext(WorkoutsContext);
 
   useEffect(() => {
-
     const key = activeTab === "Today's Plan" ? "myPlanData" : "savePlanData";
     
-    if(key==="myPlanData"){
+    if (key === "myPlanData") {
       const storedData = localStorage.getItem(key);
       if (storedData) {
         try {
@@ -37,7 +36,7 @@ const MyPlanSection = () => {
       } else {
         setPlanItems([]);
       }
-    }else if(key==="savePlanData"){
+    } else if (key === "savePlanData") {
       const storedData = localStorage.getItem(key);
       if (storedData) {
         try {
@@ -49,11 +48,8 @@ const MyPlanSection = () => {
       } else {
         setSaveItems([]);
       }
-    }
-    
-
-
-  }, [activeTab]);
+    } 
+  }, [activeTab, setPlanItems, setSaveItems]);
 
 
   const totalExercises = activeTab === "Today's Plan"? planItems.length:saveItems.length;
@@ -94,7 +90,7 @@ const MyPlanSection = () => {
   const sortedPlanItems = activeTab === "Today's Plan" ? [...planItems].sort((b, a) => {
     if (sortBy === "Duration") return (b.duration || 0) - (a.duration || 0);
     if (sortBy === "Calories") return (b.caloriesBurned || 0) - (a.caloriesBurned || 0);
-    if (sortBy === "Rating") return (b.rating || 0) - (a.rating || 0);
+    if (sortBy === "Rating") return (a.rating || 0) - (b.rating || 0);
     return 0;
   }):[...saveItems].sort((b, a) => {
     if (sortBy === "Duration") return (b.duration || 0) - (a.duration || 0);

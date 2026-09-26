@@ -29,8 +29,8 @@ const Navbar = () => {
           >
             {isOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
           </button>
-          <Link href="/" className="flex items-center gap-2 group">
-            <Image src={Dumbbel} alt="Dumbbel" className="w-6 h-6 text-[#a3e635] transform -rotate-90 group-hover:scale-110 transition-transform" /> 
+          <Link onClick={()=>setActiveTab("Workouts")} href="/" className="flex items-center gap-2 group">
+            <Image src={Dumbbel} alt="Dumbbel" className="w-6 h-6 text-[#a3e635] transform -rotate-0 group-hover:scale-110 transition-transform" /> 
             <span className="text-xl font-extrabold tracking-wider text-white">
               FITLOG
             </span>
@@ -68,7 +68,7 @@ const Navbar = () => {
             <span className="text-xs min-[1025px]:text-sm text-gray-300 font-medium group-hover:text-white transition-colors">
               Plan
             </span>
-            <span className="bg-[#a3e635] text-black text-xs font-bold w-5 h-5 min-[1025px]:w-6 min-[1025px]:h-6 rounded-full flex items-center justify-center">
+            <span className="bg-[#ccff00] text-black text-xs font-bold w-5 h-5 min-[1025px]:w-6 min-[1025px]:h-6 rounded-full flex items-center justify-center">
               {planItems.length}
             </span>
           </Link>

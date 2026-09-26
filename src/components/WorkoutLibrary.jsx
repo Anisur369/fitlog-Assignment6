@@ -9,7 +9,7 @@ const WorkoutLibrary = () => {
 
   return (
     <section className="bg-[#0b0c0e] py-12 px-4 sm:px-6 lg:px-8 text-white min-h-screen">
-      <div className="max-w-7xl mx-auto">
+      <div id="library" className="max-w-7xl mx-auto">
         <div className="mb-8">
           <h2 className="text-3xl sm:text-4xl font-black tracking-tight uppercase">
             THE LIBRARY

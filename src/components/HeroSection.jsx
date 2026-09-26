@@ -1,6 +1,7 @@
 import React from "react";
 import Image from "next/image";
 import gymIllustration from "../assets/banner.png"; 
+import Link from "next/link";
 
 const HeroSection = () => {
   return (
@@ -18,9 +19,9 @@ const HeroSection = () => {
             FitLog is a dark, no-nonsense gym companion: pick a lift, lock it
             into today&apos;s plan, and watch the week&apos;s work add up.
           </p>
-          <button className="bg-[#a3e635] hover:bg-[#8ee012] text-black font-extrabold text-xs sm:text-sm tracking-wider px-6 py-3.5 rounded-lg uppercase transition-all duration-200 transform active:scale-95 shadow-md">
+          <Link href="#library" className="bg-[#a3e635] hover:bg-[#8ee012] text-black font-extrabold text-xs sm:text-sm tracking-wider px-6 py-3.5 rounded-lg uppercase transition-all duration-200 transform active:scale-95 shadow-md">
             BROWSE WORKOUTS
-          </button>
+          </Link>
         </div>
         
         {/* Right Side Image */}

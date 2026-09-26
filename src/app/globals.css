@@ -1,2 +1,23 @@
-@import "tailwindcss";
 @plugin "daisyui";
+@import "tailwindcss";
+
+
+@theme {
+  --font-sans: var(--font-oswald), sans-serif;
+}
+body {
+  font-family: var(--font-oswald), sans-serif;
+}
+
+
+
+/* @import url('https://fonts.googleapis.com/css2?family=Oswald:wght@200..700&display=swap'); */
+
+/* 
+
+body{
+  font-family: "Oswald", sans-serif,
+  font-optical-sizing: auto,
+  font-weight: <weight>,
+  font-style: normal
+} */
